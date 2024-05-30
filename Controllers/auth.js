@@ -1,7 +1,7 @@
 const getPool = require("../config/db");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
+///register
 exports.register = async (req, res) => {
   const user = req.body.user;
   const fullname = req.body.fullname;
@@ -40,9 +40,10 @@ exports.register = async (req, res) => {
   }
 };
 
+///login
 exports.logins = async (req, res) => {
-  const user = req.body.user;
-  const pass = req.body.pass;
+  const user = req.body.email;
+  const pass = req.body.password;
 
   try {
     //check user
@@ -59,20 +60,44 @@ exports.logins = async (req, res) => {
       return res.status(404).json({ Message: "Invalid username" });
     } else {
       //payload
+      // console.log(results);
       const storedHashedPassword = results[0].pass;
       const passwordMatch = await bcrypt.compare(pass, storedHashedPassword);
       if (passwordMatch) {
         //generate
-        const token = jwt.sign({ user: user }, "secret_key", {
+        const token = jwt.sign({ user: user }, process.env.JWT_LOGIN_TOKEN, {
           expiresIn: "1h",
         });
-        return res.json({ token: token, user: user });
+        return res.json({ status: "ok", token: token, name: user });
       } else {
-        return res.status(400).send("Invalid username or password");
+        return res.status(400).json({ status: "Invalid username or password" });
       }
     }
   } catch (err) {
     console.log(err);
     res.status(500).send("Server login error");
+  }
+};
+
+exports.auths = (req, res) => {
+  const { token } = req.body;
+  if (token) {
+    try {
+      const decode = jwt.verify(token, process.env.JWT_LOGIN_TOKEN);
+      res.json({
+        auth: true,
+        data: decode,
+      });
+    } catch (error) {
+      res.json({
+        auth: false,
+        data: error.message,
+      });
+    }
+  } else {
+    res.json({
+      auth: false,
+      data: "No Token Found in request",
+    });
   }
 };

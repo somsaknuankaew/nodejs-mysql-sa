@@ -2,7 +2,7 @@ const express = require("express");
 const { list, create, read, update, del } = require("../Controllers/product");
 const { auth } = require("../middleware/auth");
 const router = express.Router();
-router.get("/productlist", auth, list);
+router.post("/productlist", auth, list);
 router.get("/product/:id", auth, read);
 router.post("/product", auth, create);
 router.put("/product/:id", auth, update);
