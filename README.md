@@ -15,7 +15,10 @@
 
 5 git remote add origin https://github.com/username/repository.git
 อัปโหลดโปรเจกต์ไปยัง GitHub
-6 git push -u origin master
-หรือ
-git push -u origin main
+6 git push -u origin main
 เท่านี้โปรเจกต์ของคุณก็จะถูกอัปโหลดขึ้น GitHub เรียบร้อยแล้ว!
+
+ดึงgit ลงเครื่อง
+8.เปิด path ที่ต้องการ ติดตั้ง 
+9. กด Ship + คลิกขวา เลือก Open PowerShell window here 
+10. git cline https://github.com/somsaknuankaew/nodejs-mysql-sa.git -b main 
