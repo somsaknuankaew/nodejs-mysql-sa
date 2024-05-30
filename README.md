@@ -1,9 +1,10 @@
-           up โปรเจกไปที่ github
+up โปรเจกไปที่ github
 1 ไปยังโฟลเดอร์โปรเจกต์ของคุณ
  cd path/to/your/project
 เริ่มต้น Git repository
 
-1 git init
+1 
+git init
 เพิ่มไฟล์ทั้งหมดลงใน repository
 
 3 git add .
