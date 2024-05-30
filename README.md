@@ -1,3 +1,4 @@
+           up โปรเจกไปที่ github
 1 ไปยังโฟลเดอร์โปรเจกต์ของคุณ
  cd path/to/your/project
 เริ่มต้น Git repository
@@ -18,7 +19,10 @@
 6 git push -u origin main
 เท่านี้โปรเจกต์ของคุณก็จะถูกอัปโหลดขึ้น GitHub เรียบร้อยแล้ว!
 
-ดึงgit ลงเครื่อง
+         ดึง git nodejs-mysql-sa ลงเครื่องตนเอง
+
 8.เปิด path ที่ต้องการ ติดตั้ง 
+
 9. กด Ship + คลิกขวา เลือก Open PowerShell window here 
+
 10. git cline https://github.com/somsaknuankaew/nodejs-mysql-sa.git -b main 
