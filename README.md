@@ -19,7 +19,7 @@ up โปรเจกไปที่ github
 
 เชื่อมต่อ Git Repository ในเครื่องกับ GitHub
 
-     git remote add origin https://github.com/username/repository.git
+     git remote add origin https://github.com/somsaknuankaew/nodejs-mysql-sa.git
 
 อัปโหลดโปรเจกต์ไปยัง GitHub
 
