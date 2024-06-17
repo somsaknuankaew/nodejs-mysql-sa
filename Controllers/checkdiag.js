@@ -144,3 +144,36 @@ exports.n185 = async (req, res, next) => {
     res.status(500).send(err);
   }
 };
+
+exports.z368 = async (req, res, next) => {
+  const { token, date1, date2 } = req.body;
+  try {
+    const qeurytext = `select  o.hn,o.vn,o.vstdate,p.cid,oq.seq_id,o.vsttime,v.pdx,i.name as pdx_name,o.finance_lock,o.oqueue,i3.an
+    from ovst o
+     inner join opitemrece o1 on o1.vn=o.vn 	
+      left outer join vn_stat v   on v.vn = o.vn  
+      left outer join patient p  on p.hn = o.hn  
+      left outer join pttype t on t.pttype = o.pttype 
+      left outer join icd101 i on i.code = v.pdx  
+      left outer join spclty s on s.spclty = o.spclty  
+      left outer join ovstist sti on sti.ovstist = o.ovstist 
+      left outer join ovstost st on st.ovstost = o.ovstost  
+      left outer join ovst_seq oq on oq.vn = o.vn  
+      left outer join ipt i3  on i3.vn = o.vn  
+      where o.vstdate between $1 and $2   
+      and o1.icode='3031168'	
+      and o.pttype in('44')
+     and (v.pdx is null or v.pdx = '') and (i3.an is null or i3.an='')
+      order by o.vn`;
+    const values = [date1, date2];
+    const results = await pgdb.query(qeurytext, values);
+    if (results == "") {
+      res.status(404).json({ message: "No User found" });
+    } else {
+      res.status(200).json(results.rows);
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err);
+  }
+};
