@@ -38,9 +38,23 @@ up โปรเจกไปที่ github
 
 
 update file to git hub 
-เชื่อมต่อ local repository กับ remote repository: git remote add origin https://github.com/username/repository.git
-ตรวจสอบสถานะของ repository:git status
-พิ่มไฟล์ที่มีการเปลี่ยนแปลงไปยัง staging area:git add .
-ทำการ commit การเปลี่ยนแปลง:git commit -m "อัปเดตไฟล์และเพิ่มฟีเจอร์ใหม่"
-อัปเดตการเปลี่ยนแปลงไปยัง remote repository:git push origin main
+เชื่อมต่อ local repository กับ remote repository: 
+
+git remote add origin https://github.com/username/repository.git
+
+ตรวจสอบสถานะของ repository:
+
+git status
+
+พิ่มไฟล์ที่มีการเปลี่ยนแปลงไปยัง staging area:
+
+git add .
+
+ทำการ commit การเปลี่ยนแปลง:
+
+git commit -m "อัปเดตไฟล์และเพิ่มฟีเจอร์ใหม่"
+
+อัปเดตการเปลี่ยนแปลงไปยัง remote repository:
+
+git push origin main
           
