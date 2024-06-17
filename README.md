@@ -59,4 +59,5 @@ up โปรเจกไปที่ github
                     git push origin main
 ----------------------------------------------
 ดึงการเปลี่ยนแปลงจาก remote repository:
+                
                 git pull origin main         
