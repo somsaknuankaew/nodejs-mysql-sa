@@ -2,11 +2,40 @@ const pgdb = require("../config/pgdb");
 const getPool = require("../config/db");
 
 exports.inscrightlog = async (req, res) => {
-  const { cid, hn, vn, pttype, vstdate, hospmain, rent_id, hospsub } = req.body;
+  const {
+    cid,
+    hn,
+    vn,
+    pttype,
+    vstdate,
+    hospmain,
+    rent_id,
+    hospsub,
+    maininscl,
+    subinscl,
+    primaryprovince,
+    rightold,
+    rightnew,
+  } = req.body;
+
   try {
     const results = await getPool().query(
-      "insert  into cright_log(cid,hn,vn,pttype,vstdate,hospmain,rent_id,hospsub)values(?,?,?,?,?,?,?,?)",
-      [cid, hn, vn, pttype, vstdate, hospmain, rent_id, hospsub]
+      "insert  into cright_log(cid,hn,vn,pttype,vstdate,hospmain,rent_id,hospsub,maininscl,subinscl,primaryprovince,rightold,rightnew)values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      [
+        cid,
+        hn,
+        vn,
+        pttype,
+        vstdate,
+        hospmain,
+        rent_id,
+        hospsub,
+        maininscl,
+        subinscl,
+        primaryprovince,
+        rightold,
+        rightnew,
+      ]
     );
     if (results[0].affectedRows === 0) {
       res.status(404).json({ error: "User not found" });
@@ -36,7 +65,7 @@ exports.rrightlogid = async (req, res) => {
 };
 
 exports.crightslist = async (req, res, next) => {
-  const { token, date1 } = req.body;
+  const { date1 } = req.body;
   try {
     const qeurytext = `select row_number() over() as number,x.* as counssst 
       from(
@@ -117,7 +146,7 @@ exports.crightslist = async (req, res, next) => {
 };
 
 exports.tokenright = async (req, res, next) => {
-  const { token, date1 } = req.body;
+  /*  const { token, date1 } = req.body; */
   try {
     const qeurytext = `select cid ,token  from nhso_token where is_invalid='N' order by  update_datetime desc limit 1`;
     const results = await pgdb.query(qeurytext);
