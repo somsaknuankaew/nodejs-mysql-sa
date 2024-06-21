@@ -2,11 +2,11 @@ const pgdb = require("../config/pgdb");
 const getPool = require("../config/db");
 
 exports.inscrightlog = async (req, res) => {
-  const { cid, hn, vn, pttype, vstdate, hospmain, err, rent_id } = req.body;
+  const { cid, hn, vn, pttype, vstdate, hospmain, rent_id, hospsub } = req.body;
   try {
     const results = await getPool().query(
       "insert  into cright_log(cid,hn,vn,pttype,vstdate,hospmain,rent_id,hospsub)values(?,?,?,?,?,?,?,?)",
-      [cid, hn, vn, pttype, vstdate, hospmain, err, rent_id]
+      [cid, hn, vn, pttype, vstdate, hospmain, rent_id, hospsub]
     );
     if (results[0].affectedRows === 0) {
       res.status(404).json({ error: "User not found" });
