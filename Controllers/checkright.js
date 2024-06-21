@@ -1,22 +1,41 @@
 const pgdb = require("../config/pgdb");
+const getPool = require("../config/db");
 
-exports.tokenright = async (req, res, next) => {
-  const { token, date1 } = req.body;
+exports.inscrightlog = async (req, res) => {
+  const { cid, hn, vn, pttype, vstdate, hospmain, err, rent_id } = req.body;
   try {
-    const qeurytext = `select cid,token from nhso_token where is_invalid='N' order by  update_datetime desc limit 1`;
-    const results = await pgdb.query(qeurytext);
-    if (results == "") {
-      res.status(404).json({ message: "No User found" });
-    } else {
-      res.status(200).json(results.rows);
+    const results = await getPool().query(
+      "insert  into cright_log(cid,hn,vn,pttype,vstdate,hospmain,rent_id,hospsub)values(?,?,?,?,?,?,?,?)",
+      [cid, hn, vn, pttype, vstdate, hospmain, err, rent_id]
+    );
+    if (results[0].affectedRows === 0) {
+      res.status(404).json({ error: "User not found" });
     }
+    res.status(201).json({ message: "User Cerate Successfully" });
   } catch (err) {
     console.log(err);
-    res.status(500).send(err);
+    res.status(500).send("Server Error");
   }
 };
 
-exports.crights = async (req, res, next) => {
+exports.rrightlogid = async (req, res) => {
+  const vn = req.params.vn;
+  try {
+    const results = await getPool().query(
+      "select * from cright_log where vn=?",
+      [vn]
+    );
+    if (results.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.send(results[0][0]);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server Error");
+  }
+};
+
+exports.crightslist = async (req, res, next) => {
   const { token, date1 } = req.body;
   try {
     const qeurytext = `select row_number() over() as number,x.* as counssst 
@@ -86,6 +105,22 @@ exports.crights = async (req, res, next) => {
    ) x `;
     const values = [date1, date1];
     const results = await pgdb.query(qeurytext, values);
+    if (results == "") {
+      res.status(404).json({ message: "No User found" });
+    } else {
+      res.status(200).json(results.rows);
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err);
+  }
+};
+
+exports.tokenright = async (req, res, next) => {
+  const { token, date1 } = req.body;
+  try {
+    const qeurytext = `select cid ,token  from nhso_token where is_invalid='N' order by  update_datetime desc limit 1`;
+    const results = await pgdb.query(qeurytext);
     if (results == "") {
       res.status(404).json({ message: "No User found" });
     } else {
