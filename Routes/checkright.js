@@ -10,5 +10,5 @@ const router = express.Router();
 router.post("/crightslist", auth, crightslist);
 router.post("/tokenright", auth, tokenright);
 router.post("/inscrightlog", auth, inscrightlog);
-router.get("/crightlog/:vn", auth, rrightlogid);
+router.post("/crightlog", auth, rrightlogid);
 module.exports = router;

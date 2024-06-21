@@ -48,10 +48,10 @@ exports.inscrightlog = async (req, res) => {
 };
 
 exports.rrightlogid = async (req, res) => {
-  const vn = req.params.vn;
+  const { vn } = req.body;
   try {
     const results = await getPool().query(
-      "select * from cright_log where vn=?",
+      "select count(*) as vncount  from cright_log where vn=?",
       [vn]
     );
     if (results.length === 0) {
