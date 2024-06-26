@@ -41,6 +41,9 @@ exports.inscrightlog = async (req, res) => {
       res.status(404).json({ error: "User not found" });
     }
     res.status(201).json({ message: "User Cerate Successfully" });
+
+    // ปิดการเชื่อมต่อ
+    getPool.end;
   } catch (err) {
     console.log(err);
     res.status(500).send("Server Error");
@@ -58,11 +61,22 @@ exports.rrightlogid = async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
     res.send(results[0][0]);
+
+    // ปิดการเชื่อมต่อ
+    getPool.end((err) => {
+      if (err) {
+        console.error("Error closing the connection:", err.stack);
+        return;
+      }
+      console.log("Connection closed");
+    });
   } catch (err) {
     console.log(err);
     res.status(500).send("Server Error");
   }
 };
+
+//pgconnect
 
 exports.crightslist = async (req, res, next) => {
   const { date1 } = req.body;
@@ -134,12 +148,15 @@ exports.crightslist = async (req, res, next) => {
    ) x `;
     const values = [date1, date1];
     const results = await pgdb.query(qeurytext, values);
+
     if (results == "") {
       res.status(404).json({ message: "No User found" });
     } else {
       res.status(200).json(results.rows);
     }
+    pgdb.end;
   } catch (err) {
+    pgdb.end;
     console.log(err);
     res.status(500).send(err);
   }
@@ -155,6 +172,7 @@ exports.tokenright = async (req, res, next) => {
     } else {
       res.status(200).json(results.rows);
     }
+    pgdb.end;
   } catch (err) {
     console.log(err);
     res.status(500).send(err);
