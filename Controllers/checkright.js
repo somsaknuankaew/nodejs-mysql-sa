@@ -63,13 +63,7 @@ exports.rrightlogid = async (req, res) => {
     res.send(results[0][0]);
 
     // ปิดการเชื่อมต่อ
-    getPool.end((err) => {
-      if (err) {
-        console.error("Error closing the connection:", err.stack);
-        return;
-      }
-      console.log("Connection closed");
-    });
+    getPool.end;
   } catch (err) {
     console.log(err);
     res.status(500).send("Server Error");
