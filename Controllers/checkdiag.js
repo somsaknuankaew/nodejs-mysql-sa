@@ -43,7 +43,6 @@ exports.z100 = async (req, res, next) => {
       res.status(200).json(results.rows);
     }
   } catch (err) {
-    pgdb.end;
     console.log(err);
     res.status(500).send(err);
   }
@@ -70,12 +69,13 @@ exports.z000 = async (req, res, next) => {
       order by o.vn`;
     const values = [date1, date2];
     const results = await pgdb.query(qeurytext, values);
-    pgdb.end;
+
     if (results == "") {
       res.status(404).json({ message: "No User found" });
     } else {
       res.status(200).json(results.rows);
     }
+    pgdb.end;
   } catch (err) {
     console.log(err);
     res.status(500).send(err);
@@ -104,12 +104,13 @@ exports.z653 = async (req, res, next) => {
       order by o.vn`;
     const values = [date1, date2];
     const results = await pgdb.query(qeurytext, values);
-    pgdb.end;
+
     if (results == "") {
       res.status(404).json({ message: "No User found" });
     } else {
       res.status(200).json(results.rows);
     }
+    pgdb.end;
   } catch (err) {
     console.log(err);
     res.status(500).send(err);
@@ -146,7 +147,6 @@ exports.n185 = async (req, res, next) => {
     }
     pgdb.end;
   } catch (err) {
-    pgdb.end;
     console.log(err);
     res.status(500).send(err);
   }
@@ -182,7 +182,6 @@ exports.z368 = async (req, res, next) => {
     }
     pgdb.end;
   } catch (err) {
-    pgdb.end;
     console.log(err);
     res.status(500).send(err);
   }

@@ -37,13 +37,13 @@ exports.inscrightlog = async (req, res) => {
         rightnew,
       ]
     );
+    // ปิดการเชื่อมต่อ
+    getPool.release;
+
     if (results[0].affectedRows === 0) {
       res.status(404).json({ error: "User not found" });
     }
     res.status(201).json({ message: "User Cerate Successfully" });
-
-    // ปิดการเชื่อมต่อ
-    getPool.end;
   } catch (err) {
     console.log(err);
     res.status(500).send("Server Error");
@@ -57,13 +57,13 @@ exports.rrightlogid = async (req, res) => {
       "select count(*) as vncount  from cright_log where vn=?",
       [vn]
     );
+    // ปิดการเชื่อมต่อ
+    getPool.release;
+
     if (results.length === 0) {
       return res.status(404).json({ error: "User not found" });
     }
     res.send(results[0][0]);
-
-    // ปิดการเชื่อมต่อ
-    getPool.end;
   } catch (err) {
     console.log(err);
     res.status(500).send("Server Error");
@@ -142,31 +142,29 @@ exports.crightslist = async (req, res, next) => {
    ) x `;
     const values = [date1, date1];
     const results = await pgdb.query(qeurytext, values);
-
+    // ปิดการเชื่อมต่อ
+    pgdb.end;
     if (results == "") {
       res.status(404).json({ message: "No User found" });
     } else {
       res.status(200).json(results.rows);
     }
-    pgdb.end;
   } catch (err) {
-    pgdb.end;
     console.log(err);
     res.status(500).send(err);
   }
 };
 
 exports.tokenright = async (req, res, next) => {
-  /*  const { token, date1 } = req.body; */
   try {
     const qeurytext = `select cid ,token  from nhso_token where is_invalid='N' order by  update_datetime desc limit 1`;
     const results = await pgdb.query(qeurytext);
+    pgdb.end;
     if (results == "") {
       res.status(404).json({ message: "No User found" });
     } else {
       res.status(200).json(results.rows);
     }
-    pgdb.end;
   } catch (err) {
     console.log(err);
     res.status(500).send(err);

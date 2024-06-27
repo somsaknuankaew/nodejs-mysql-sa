@@ -20,6 +20,8 @@ exports.register = async (req, res) => {
     let [results] = await getPool().query("SELECT * FROM user WHERE user = ?", [
       user,
     ]);
+    getPool.release;
+
     if (results.length > 0) {
       return res
         .status(404)
@@ -32,6 +34,7 @@ exports.register = async (req, res) => {
         "insert into user(user,pass,fullname) values(?,?,?)",
         [user, haspass, fullname]
       );
+      getPool.release;
       res.status(200).json(result1[0]);
     }
   } catch (err) {
@@ -56,6 +59,7 @@ exports.logins = async (req, res) => {
     let [results] = await getPool().query("SELECT * FROM user WHERE user = ?", [
       user,
     ]);
+    getPool.release;
     if (results.length === 0) {
       return res.status(404).json({ Message: "Invalid username" });
     } else {
