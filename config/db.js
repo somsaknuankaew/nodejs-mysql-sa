@@ -1,4 +1,4 @@
-const mysql = require("mysql2/promise");
+/* const mysql = require("mysql2/promise");
 const dotenv = require("dotenv");
 dotenv.config();
 module.exports = function getPool() {
@@ -8,10 +8,18 @@ module.exports = function getPool() {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
-    debug: false,
-    waitForConnections: true,
-    multipleStatements: true,
   };
   pool = mysql.createPool(config);
   return pool;
-};
+}; */
+const mysql = require("mysql2/promise");
+require("dotenv").config(); // โหลดตัวแปรสภาพแวดล้อมจากไฟล์ .env
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
+  //connectionLimit: process.env.DB_CONNECTION_LIMIT
+});
+
+module.exports = pool;

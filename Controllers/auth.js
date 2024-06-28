@@ -1,4 +1,5 @@
-const getPool = require("../config/db");
+const mydbPool = require("../config/db");
+const getmy = require("../config/mydb");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 ///register
@@ -7,7 +8,7 @@ exports.register = async (req, res) => {
   const fullname = req.body.fullname;
   var pass = req.body.pass;
   var pass2 = req.body.pass2;
-  //let errors = [];
+  const connection = await getmy.getConnection();
   try {
     if (!user || !pass || !pass2) {
       return res
@@ -17,11 +18,11 @@ exports.register = async (req, res) => {
     if (pass != pass2) {
       return res.status(400).json({ messsage: "Password not match!!!" });
     }
-    let [results] = await getPool().query("SELECT * FROM user WHERE user = ?", [
-      user,
-    ]);
-    getPool.release;
-
+    let [results] = await connection.query(
+      "SELECT * FROM user WHERE user = ?",
+      [user]
+    );
+    await connection.release();
     if (results.length > 0) {
       return res
         .status(404)
@@ -29,14 +30,13 @@ exports.register = async (req, res) => {
     } else {
       const salt = await bcrypt.genSalt(10);
       const haspass = await bcrypt.hash(pass, salt);
-
-      const result1 = await getPool().query(
+      const result1 = await connection.query(
         "insert into user(user,pass,fullname) values(?,?,?)",
         [user, haspass, fullname]
       );
-      getPool.release;
       res.status(200).json(result1[0]);
     }
+    await connection.release();
   } catch (err) {
     console.log(err);
     res.status(500).send("Server Error");
@@ -47,7 +47,7 @@ exports.register = async (req, res) => {
 exports.logins = async (req, res) => {
   const user = req.body.email;
   const pass = req.body.password;
-
+  const connection = await getmy.getConnection();
   try {
     //check user
     if (!user || !pass) {
@@ -56,10 +56,11 @@ exports.logins = async (req, res) => {
         .json({ messsage: "Please insert in all the fields" });
     }
 
-    let [results] = await getPool().query("SELECT * FROM user WHERE user = ?", [
-      user,
-    ]);
-    getPool.release;
+    let [results] = await connection.query(
+      "SELECT * FROM user WHERE user = ?",
+      [user]
+    );
+    await connection.release();
     if (results.length === 0) {
       return res.status(404).json({ Message: "Invalid username" });
     } else {

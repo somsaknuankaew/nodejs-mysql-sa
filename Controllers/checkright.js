@@ -1,7 +1,9 @@
 const pgdb = require("../config/pgdb");
-const getPool = require("../config/db");
+//const getPool = require("../config/db");
+const getmy = require("../config/mydb");
 
 exports.inscrightlog = async (req, res) => {
+  const connection = await getmy.getConnection();
   const {
     cid,
     hn,
@@ -19,7 +21,7 @@ exports.inscrightlog = async (req, res) => {
   } = req.body;
 
   try {
-    const results = await getPool().query(
+    const results = await connection.query(
       "insert  into cright_log(cid,hn,vn,pttype,vstdate,hospmain,rent_id,hospsub,maininscl,subinscl,primaryprovince,rightold,rightnew)values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         cid,
@@ -37,9 +39,6 @@ exports.inscrightlog = async (req, res) => {
         rightnew,
       ]
     );
-    // ปิดการเชื่อมต่อ
-    getPool.release;
-
     if (results[0].affectedRows === 0) {
       res.status(404).json({ error: "User not found" });
     }
@@ -47,19 +46,19 @@ exports.inscrightlog = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).send("Server Error");
+  } finally {
+    await connection.release();
   }
 };
 
 exports.rrightlogid = async (req, res) => {
+  const connection = await getmy.getConnection();
   const { vn } = req.body;
   try {
-    const results = await getPool().query(
+    const results = await connection.query(
       "select count(*) as vncount  from cright_log where vn=?",
       [vn]
     );
-    // ปิดการเชื่อมต่อ
-    getPool.release;
-
     if (results.length === 0) {
       return res.status(404).json({ error: "User not found" });
     }
@@ -67,14 +66,16 @@ exports.rrightlogid = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).send("Server Error");
+  } finally {
+    await connection.release();
   }
 };
-
 //pgconnect
 
 exports.crightslist = async (req, res, next) => {
   const { date1 } = req.body;
   try {
+    const client = await pgdb.connect();
     const qeurytext = `select row_number() over() as number,x.* as counssst 
       from(
           
@@ -141,9 +142,8 @@ exports.crightslist = async (req, res, next) => {
    GROUP BY  pt.cid,k.department,o.hn,o.vn,names,o.pttype,pttypes,o.vstdate,o.hospmain,hospname,staff_name,err,rent_id,o.staff
    ) x `;
     const values = [date1, date1];
-    const results = await pgdb.query(qeurytext, values);
+    const results = await client.query(qeurytext, values);
     // ปิดการเชื่อมต่อ
-    pgdb.end;
     if (results == "") {
       res.status(404).json({ message: "No User found" });
     } else {
@@ -152,14 +152,17 @@ exports.crightslist = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     res.status(500).send(err);
+  } finally {
+    await client.release();
   }
 };
 
 exports.tokenright = async (req, res, next) => {
   try {
+    const client = await pgdb.connect();
     const qeurytext = `select cid ,token  from nhso_token where is_invalid='N' order by  update_datetime desc limit 1`;
-    const results = await pgdb.query(qeurytext);
-    pgdb.end;
+    const results = await client.query(qeurytext);
+
     if (results == "") {
       res.status(404).json({ message: "No User found" });
     } else {
@@ -168,5 +171,7 @@ exports.tokenright = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     res.status(500).send(err);
+  } finally {
+    await client.release();
   }
 };
