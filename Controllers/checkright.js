@@ -70,15 +70,14 @@ exports.rrightlogid = async (req, res) => {
     await connection.release();
   }
 };
-//pgconnect
 
+//pgconnect
 exports.crightslist = async (req, res, next) => {
   const { date1 } = req.body;
+  const clients = await pgdb.getClient();
   try {
-    const client = await pgdb.connect();
     const qeurytext = `select row_number() over() as number,x.* as counssst 
       from(
-          
        select pt.cid,k.department,o.hn,o.vn ,concat(pt.pname,pt.fname,' ',pt.lname) as names,o.pttype ,p.name as pttypes,o.vstdate,o.hospmain,h.name as hospname ,ou.name as staff_name,'สิทธิไม่สอดคลองกับสถานพยาบาล' as err
       ,count(pf.rent_id) as rent_id
       from ovst o 
@@ -142,7 +141,7 @@ exports.crightslist = async (req, res, next) => {
    GROUP BY  pt.cid,k.department,o.hn,o.vn,names,o.pttype,pttypes,o.vstdate,o.hospmain,hospname,staff_name,err,rent_id,o.staff
    ) x `;
     const values = [date1, date1];
-    const results = await client.query(qeurytext, values);
+    const results = await clients.query(qeurytext, values);
     // ปิดการเชื่อมต่อ
     if (results == "") {
       res.status(404).json({ message: "No User found" });
@@ -153,16 +152,15 @@ exports.crightslist = async (req, res, next) => {
     console.log(err);
     res.status(500).send(err);
   } finally {
-    await client.release();
+    await clients.release();
   }
 };
 
 exports.tokenright = async (req, res, next) => {
+  const clients = await pgdb.getClient();
   try {
-    const client = await pgdb.connect();
     const qeurytext = `select cid ,token  from nhso_token where is_invalid='N' order by  update_datetime desc limit 1`;
-    const results = await client.query(qeurytext);
-
+    const results = await clients.query(qeurytext);
     if (results == "") {
       res.status(404).json({ message: "No User found" });
     } else {
@@ -172,6 +170,6 @@ exports.tokenright = async (req, res, next) => {
     console.log(err);
     res.status(500).send(err);
   } finally {
-    await client.release();
+    clients.release();
   }
 };
