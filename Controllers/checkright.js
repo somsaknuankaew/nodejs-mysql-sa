@@ -62,7 +62,7 @@ exports.crightslist = async (req, res, next) => {
   try {
     const qeurytext = `select row_number() over() as number, x.* as counssst 
       from(
-       select pt.cid,k.department,o.hn,o.vn ,concat(pt.pname,pt.fname,' ',pt.lname) as names,o.pttype ,p.name as pttypes,o.vstdate,o.hospmain,h.name as hospname ,ou.name as staff_name,'สิทธิไม่สอดคลองกับสถานพยาบาล' as err
+       select pt.cid,o.oqueue, k.department,o.hn,o.vn ,concat(pt.pname,pt.fname,' ',pt.lname) as names,o.pttype ,p.name as pttypes,o.vstdate,o.hospmain,h.name as hospname ,ou.name as staff_name,'สิทธิไม่สอดคลองกับสถานพยาบาล' as err
       ,count(pf.rent_id) as rent_id
       from ovst o 
       left join opdrent	pf on pf.hn = o.hn and pf.return_date is null
@@ -76,10 +76,10 @@ exports.crightslist = async (req, res, next) => {
       and ((o.pttype in('69','71') and h.chwpart = '32')
           or(o.pttype in('68','70') and h.chwpart != '32')
           or( o.pttype in('48','19','23') and o.hospmain!='10668'))
-          GROUP BY  pt.cid,k.department,o.hn,o.vn,names,o.pttype,pttypes,o.staff,o.vstdate,o.hospmain,hospname,staff_name,err,rent_id
+          GROUP BY  pt.cid,o.oqueue,k.department,o.hn,o.vn,names,o.pttype,pttypes,o.staff,o.vstdate,o.hospmain,hospname,staff_name,err,rent_id
       union
           
-      select  pt.cid,k.department,o.hn,o.vn ,concat(pt.pname,pt.fname,' ',pt.lname) as names,o.pttype ,p.name as pttypes,o.vstdate,o.hospmain,h.name as hospname,ou.name as staff_name,'สถานพยาบาลหลักโรงพยาบาลสุรินทร์แต่สิทธิไม่ใช่ สิทธิบัตรทอง(รพ.สร)' as err
+      select  pt.cid,o.oqueue,k.department,o.hn,o.vn ,concat(pt.pname,pt.fname,' ',pt.lname) as names,o.pttype ,p.name as pttypes,o.vstdate,o.hospmain,h.name as hospname,ou.name as staff_name,'สถานพยาบาลหลักโรงพยาบาลสุรินทร์แต่สิทธิไม่ใช่ สิทธิบัตรทอง(รพ.สร)' as err
       ,count(pf.rent_id) as rent_id
       from ovst o 
       left join opdrent	pf on pf.hn = o.hn and pf.return_date is null
@@ -92,10 +92,10 @@ exports.crightslist = async (req, res, next) => {
           and o.staff='kiosk'
       and o.pttype in('68','69','70','71')
       and o.hospmain = '10668'
-      GROUP BY  pt.cid,k.department,o.hn,o.vn,names,o.pttype,pttypes,o.vstdate,o.hospmain,hospname,staff_name,err,rent_id,o.staff
+      GROUP BY  pt.cid,o.oqueue,k.department,o.hn,o.vn,names,o.pttype,pttypes,o.vstdate,o.hospmain,hospname,staff_name,err,rent_id,o.staff
   
       union
-      select  pt.cid,k.department,o.hn,o.vn ,concat(pt.pname,pt.fname,' ',pt.lname) as names,o.pttype ,p.name as pttypes,o.vstdate,o.hospmain,h.name as hospname ,ou.name as staff_name,'มีการให้สิทที่มีสถานะ(ยกเลิกการใช้งาน)' as err
+      select  pt.cid,o.oqueue,k.department,o.hn,o.vn ,concat(pt.pname,pt.fname,' ',pt.lname) as names,o.pttype ,p.name as pttypes,o.vstdate,o.hospmain,h.name as hospname ,ou.name as staff_name,'มีการให้สิทที่มีสถานะ(ยกเลิกการใช้งาน)' as err
       ,count(pf.rent_id) as rent_id
       from ovst o 
       left join opdrent	pf on pf.hn = o.hn and pf.return_date is null
@@ -106,10 +106,10 @@ exports.crightslist = async (req, res, next) => {
       left outer join opduser ou on ou.loginname = o.staff 
       where o.vstdate between $1 and $2
       and p.isuse = 'N'
-      GROUP BY  pt.cid,k.department,o.hn,o.vn,names,o.pttype,pttypes,o.vstdate,o.hospmain,hospname,staff_name,err,rent_id,o.staff
+      GROUP BY  pt.cid,o.oqueue,k.department,o.hn,o.vn,names,o.pttype,pttypes,o.vstdate,o.hospmain,hospname,staff_name,err,rent_id,o.staff
   
       union
-      select  pt.cid,k.department,o.hn,o.vn ,concat(pt.pname,pt.fname,' ',pt.lname) as names,o.pttype ,p.name as pttypes,o.vstdate,o.hospmain,h.name as hospname ,ou.name as staff_name,'คนไข้สิทธิชำระเงินเองที่ออกโดยตู้ kios' as err
+      select  pt.cid,o.oqueue,k.department,o.hn,o.vn ,concat(pt.pname,pt.fname,' ',pt.lname) as names,o.pttype ,p.name as pttypes,o.vstdate,o.hospmain,h.name as hospname ,ou.name as staff_name,'คนไข้สิทธิชำระเงินเองที่ออกโดยตู้ kios' as err
       ,count(pf.rent_id) as rent_id
       from ovst o
       left join opdrent	pf on pf.hn = o.hn and pf.return_date is null
@@ -121,8 +121,8 @@ exports.crightslist = async (req, res, next) => {
       where o.vstdate between $1 and $2
      AND o.staff = 'kiosk'
    AND p.pttype in('01')
-   GROUP BY  pt.cid,k.department,o.hn,o.vn,names,o.pttype,pttypes,o.vstdate,o.hospmain,hospname,staff_name,err,rent_id,o.staff
-   ) x  `;
+   GROUP BY  pt.cid,o.oqueue,k.department,o.hn,o.vn,names,o.pttype,pttypes,o.vstdate,o.hospmain,hospname,staff_name,err,rent_id,o.staff
+   ) x order by x.oqueue asc `;
 
     const values = [date1, date1];
     const results = await clients.query(qeurytext, values);
