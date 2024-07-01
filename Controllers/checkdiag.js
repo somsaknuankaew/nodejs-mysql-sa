@@ -1,7 +1,7 @@
 const pgdb = require("../config/pgdb");
 
 exports.z100 = async (req, res, next) => {
-  const client = await pgdb.connect();
+  const clients = await pgdb.getClient();
   const { date1, date2 } = req.body;
   try {
     const qeurytext = `select  o.vstdate,p.cid,oq.seq_id,o.hn,o.vsttime,o.vn,
@@ -36,7 +36,8 @@ exports.z100 = async (req, res, next) => {
               and (o.anonymous_visit is null or o.anonymous_visit = 'N') and v.pdx is null and i3.an is null
               order by o.vn`;
     const values = [date1, date2];
-    const results = await client.query(qeurytext, values);
+    const results = await clients.query(qeurytext, values);
+    clients.release();
     if (results == "") {
       res.status(404).json({ message: "No User found" });
     } else {
@@ -45,13 +46,11 @@ exports.z100 = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     res.status(500).send(err);
-  } finally {
-    await client.release();
   }
 };
 
 exports.z000 = async (req, res, next) => {
-  const client = await pgdb.connect();
+  const clients = await pgdb.getClient();
   const { date1, date2 } = req.body;
   try {
     const qeurytext = `select  o.hn,o.vn,o.vstdate,p.cid,oq.seq_id,o.vsttime,v.pdx,i.name as pdx_name,o.finance_lock,o.oqueue,i3.an,main_dep
@@ -71,8 +70,8 @@ exports.z000 = async (req, res, next) => {
        and (v.pdx is null or v.pdx = '') and (i3.an is null or i3.an='')
       order by o.vn`;
     const values = [date1, date2];
-    const results = await client.query(qeurytext, values);
-
+    const results = await clients.query(qeurytext, values);
+    clients.release();
     if (results == "") {
       res.status(404).json({ message: "No User found" });
     } else {
@@ -81,13 +80,11 @@ exports.z000 = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     res.status(500).send(err);
-  } finally {
-    await client.release();
   }
 };
 
 exports.z653 = async (req, res, next) => {
-  const client = await pgdb.connect();
+  const clients = await pgdb.getClient();
   const { date1, date2 } = req.body;
   try {
     const qeurytext = `select  o.hn,o.vn,o.vstdate,p.cid,oq.seq_id,o.vsttime,v.pdx,i.name as pdx_name,o.finance_lock,o.oqueue,i3.an
@@ -108,8 +105,8 @@ exports.z653 = async (req, res, next) => {
      and (v.pdx is null or v.pdx = '') and (i3.an is null or i3.an='')
       order by o.vn`;
     const values = [date1, date2];
-    const results = await client.query(qeurytext, values);
-
+    const results = await clients.query(qeurytext, values);
+    clients.release();
     if (results == "") {
       res.status(404).json({ message: "No User found" });
     } else {
@@ -118,13 +115,11 @@ exports.z653 = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     res.status(500).send(err);
-  } finally {
-    await client.release();
   }
 };
 
 exports.n185 = async (req, res, next) => {
-  const client = await pgdb.connect();
+  const clients = await pgdb.getClient();
   const { date1, date2 } = req.body;
   try {
     const qeurytext = `select  o.hn,o.vn,o.vstdate,p.cid,oq.seq_id,o.vsttime,v.pdx,i.name as pdx_name,o.finance_lock,o.oqueue,i3.an
@@ -145,8 +140,8 @@ exports.n185 = async (req, res, next) => {
      and (v.pdx is null or v.pdx = '') and (i3.an is null or i3.an='')
       order by o.vn`;
     const values = [date1, date2];
-    const results = await client.query(qeurytext, values);
-
+    const results = await clients.query(qeurytext, values);
+    clients.release();
     if (results == "") {
       res.status(404).json({ message: "No User found" });
     } else {
@@ -155,13 +150,11 @@ exports.n185 = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     res.status(500).send(err);
-  } finally {
-    await client.release();
   }
 };
 
 exports.z368 = async (req, res, next) => {
-  const client = await pgdb.connect();
+  const clients = await pgdb.getClient();
   const { date1, date2 } = req.body;
   try {
     const qeurytext = `select  o.hn,o.vn,o.vstdate,p.cid,oq.seq_id,o.vsttime,v.pdx,i.name as pdx_name,o.finance_lock,o.oqueue,i3.an
@@ -182,8 +175,8 @@ exports.z368 = async (req, res, next) => {
      and (v.pdx is null or v.pdx = '') and (i3.an is null or i3.an='')
       order by o.vn`;
     const values = [date1, date2];
-    const results = await client.query(qeurytext, values);
-
+    const results = await clients.query(qeurytext, values);
+    clients.release();
     if (results == "") {
       res.status(404).json({ message: "No User found" });
     } else {
@@ -192,7 +185,5 @@ exports.z368 = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     res.status(500).send(err);
-  } finally {
-    await client.release();
   }
 };

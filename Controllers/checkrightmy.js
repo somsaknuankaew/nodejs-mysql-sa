@@ -2,7 +2,8 @@ const getPool = require("../config/mydb");
 exports.testlog = async (req, res) => {
   try {
     const connection = await getPool.getConnection();
-    const results = await connection.query("select *   from cright_log");
+    const results = await connection.query("select *  from cright_log");
+    connection.release();
     if (results.length === 0) {
       return res.status(404).json({ error: "User not found" });
     }
@@ -10,7 +11,5 @@ exports.testlog = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).send("Server Error");
-  } finally {
-    await connection.release();
   }
 };
