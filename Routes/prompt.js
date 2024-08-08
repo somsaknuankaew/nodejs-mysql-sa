@@ -1,0 +1,10 @@
+const express = require("express");
+const { list, create, read, update, del } = require("../Controllers/prompt");
+const { auth } = require("../middleware/auth");
+const router = express.Router();
+//router.post("/productlist", auth, list);
+//router.get("/product/:id", auth, read);
+router.post("/pcreate", create);
+//router.put("/product/:id", auth, update);
+//router.delete("/product/:id", auth, del);
+module.exports = router;
