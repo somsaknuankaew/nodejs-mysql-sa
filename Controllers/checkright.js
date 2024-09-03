@@ -7,7 +7,7 @@ exports.inscrightlog = async (req, res) => {
   const all = { ...req.body };
   try {
     const results = await connection.query(
-      "insert  into cright_log(cid,hn,vn,pttype,vstdate,hospmain,rent_id,hospsub,maininscl,subinscl,primaryprovince,rightold,rightnew)values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      "insert  into cright_log(cid,hn,vn,pttype,vstdate,hospmain,rent_id,hospsub,maininscl,subinscl,primaryprovince,rightold,rightnew,status)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         all.cid,
         all.hn,
@@ -22,6 +22,7 @@ exports.inscrightlog = async (req, res) => {
         all.primaryprovince,
         all.rightold,
         all.rightnew,
+        all.status
       ]
     );
     // ปิดการเชื่อมต่อ
@@ -38,17 +39,17 @@ exports.inscrightlog = async (req, res) => {
 
 exports.rrightlogid = async (req, res) => {
   const connection = await getmy.getConnection();
-  const { vn } = req.body;
+  const { vn,vstdate } = req.body;
   try {
     const results = await connection.query(
-      "select count(*) as vncount  from cright_log where vn=?",
+      "select *  from cright_log where vn=?",
       [vn]
     );
     connection.release();
     if (results.length === 0) {
       return res.status(404).json({ error: "User not found" });
     }
-    res.send(results[0][0]);
+    res.send(results[0]);
   } catch (err) {
     console.log(err);
     res.status(500).send("Server Error");
