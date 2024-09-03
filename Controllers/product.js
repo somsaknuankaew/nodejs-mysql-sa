@@ -48,6 +48,7 @@ exports.create = async (req, res) => {
       "insert  into user(user,pass,fullname)values(?,?,?)",
       [user, pass, fullname]
     );
+    connection.release();
     if (results[0].affectedRows === 0) {
       res.status(404).json({ error: "User not found" });
     }
@@ -57,8 +58,6 @@ exports.create = async (req, res) => {
     res
       .status(500)
       .send({ status: false, result: null, message: error.message });
-  } finally {
-    await connection.release();
   }
 };
 
