@@ -56,7 +56,6 @@ exports.rrightlogid = async (req, res) => {
   }
 };
 
-//pgconnect
 exports.crightslist = async (req, res, next) => {
   const { date1 } = req.body;
   const clients = await pgdb.getClient();
@@ -155,5 +154,78 @@ exports.tokenright = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     res.status(500).send(err);
+  }
+};
+
+/* test */
+exports.stag_use_ins = async (req, res) => {
+  const connection = await getmy.getConnection();
+  const all = { ...req.body };
+  try {
+    const results = await connection.query(
+      "insert  into cright_stag_use(cid,hn,vn,pttype,vstdate,hospmain,rent_id,hospsub,maininscl,subinscl,primaryprovince,rightold,rightnew)values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      [
+        all.cid,
+        all.hn,
+        all.vn,
+        all.pttype,
+        all.vstdate,
+        all.hospmain,
+        all.rent_id,
+        all.hospsub,
+        all.maininscl,
+        all.subinscl,
+        all.primaryprovince,
+        all.rightold,
+        all.rightnew,
+      ]
+    );
+    // ปิดการเชื่อมต่อ
+    connection.release();
+    if (results[0].affectedRows === 0) {
+      res.status(404).json({ error: "cright_stag_use not found" });
+    }
+    res.status(201).json({ message: "cright_stag_use Cerate Successfully" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server Error");
+  }
+};
+
+exports.stag_use_get_id = async (req, res) => {
+  const connection = await getmy.getConnection();
+  const { vn } = req.body;
+  try {
+    const results = await connection.query(
+      "select count(*) as vncount  from cright_stag_use where vn=?",
+      [vn]
+    );
+    connection.release();
+    if (results.length === 0) {
+      return res.status(404).json({ error: "cright_stag_use not found" });
+    }
+    res.send(results[0][0]);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server Error");
+  }
+};
+
+exports.stag_use_del = async (req, res) => {
+  const connection = await getmy.getConnection();
+  const { vn } = req.body;
+  try {
+    const results = await connection.query(
+      "delete from cright_stag_use where vn=?",
+      [vn]
+    );
+    connection.release();
+    if (results.length === 0) {
+      return res.status(404).json({ error: "cright_stag_use not found" });
+    }
+    res.send(results[0][0]);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server Error");
   }
 };
