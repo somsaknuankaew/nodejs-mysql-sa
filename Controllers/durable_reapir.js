@@ -169,10 +169,11 @@ exports.repairsearch = async (req, res, next) => {
   if (searchcode) {
     qeurytext += ` WHERE dg.inv_durable_good_code like $1 and  ir.inv_durable_good_repair_id is not null ORDER BY dg.inv_durable_good_id`;
     values.push(`%${searchcode}%`);
-  } else if (searchname) {
+  }
+  /*    else if (searchname) {
     qeurytext += ` WHERE dg.inv_durable_good_name like $1 and  ir.inv_durable_good_repair_id is not null  ORDER BY dg.inv_durable_good_id`;
     values.push(`%${searchname}%`);
-  }
+  } */
   try {
     const results = await clients.query(qeurytext, values);
     // ปิดการเชื่อมต่อ
