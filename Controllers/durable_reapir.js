@@ -5,8 +5,17 @@ exports.repairbyid = async (req, res, next) => {
   const clients = await pgdb.getClient();
   try {
     const qeurytext = `SELECT ir.inv_durable_good_repair_id,
+case 
+when ir.inv_durable_good_evl_type_id=1 then 'ซ่อมได้'
+when ir.inv_durable_good_evl_type_id=3 then 'ซ่อมไม่ได้'
+when ir.inv_durable_good_rep_eval_chk1='Y' then 'เบิกวัสดุในคลัง'
+when ir.inv_durable_good_rep_eval_chk2='Y' then 'ขอจัดซื้อวัสดุ'
+when ir.inv_durable_good_rep_eval_chk3='Y' then 'เห็นควรจ้างเอกชน'
+when ir.inv_durable_good_rep_eval_chk4='Y' then 'เห็นควรแทงชำรุด'
+end as repair_cause_result,
 dg.inv_durable_good_code,
   dg.inv_durable_good_name,
+	rs.inv_durable_good_rstatus_name,
   dgc.inv_durable_good_category_name,
   dgt.inv_durable_good_type_name,
   dg.inv_durable_good_price_cost,
@@ -26,17 +35,18 @@ dg.inv_durable_good_code,
   ed.emp_dep_id,
   dg.inv_durable_good_id,
   Concat(ep1.emp_prename_name, '', e1.emp_first_name, ' ', e1.emp_last_name) AS approve_name,
-  id.inv_dep_name,   
+  id.inv_dep_name, 
   ir.inv_dep_id AS inv_dep_id1,       
-  ir.inv_durable_good_repair_cause,       
-  ir.*                                                
+  ir.inv_durable_good_repair_cause       
+  ,ir.*                                                        
 FROM inv_durable_good dg
   LEFT JOIN inv_durable_good_type dgt ON dg.inv_durable_good_type_id = dgt.inv_durable_good_type_id
   LEFT JOIN inv_durable_good_category dgc ON dg.inv_durable_good_category_id = dgc.inv_durable_good_category_id
   LEFT JOIN inv_durable_good_status dgs ON dg.inv_durable_good_status_id = dgs.inv_durable_good_status_id
   LEFT JOIN inv_durable_good_budgeter dgb ON dg.inv_durable_good_budgeter_id = dgb.inv_durable_good_budgeter_id
   LEFT JOIN inv_durable_good_repair ir ON dg.inv_durable_good_id = ir.inv_durable_good_id
-  LEFT JOIN emp e ON ir.emp_id = e.emp_id
+  left join inv_durable_good_repair_status rs on rs.inv_durable_good_rstatus_id=ir.inv_durable_good_rstatus_id
+	LEFT JOIN emp e ON ir.emp_id = e.emp_id
   LEFT JOIN emp_prename ep ON e.emp_prename_id = ep.emp_prename_id
   LEFT JOIN emp_dep ed ON ir.emp_dep_id = ed.emp_dep_id
   LEFT JOIN inv_durable_good_repairer igr ON ir.inv_durable_good_repairer_id = igr.inv_durable_good_repairer_id
