@@ -62,5 +62,5 @@ update file to git hub
 ดึงการเปลี่ยนแปลงจาก remote repository:
                 
                git pull origin main 
-ติดตั้ง 
+ติดตั้ง โปรแกรม
                npm install
